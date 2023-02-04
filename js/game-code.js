@@ -79,7 +79,7 @@
 			{
 				this.x = 0;
 				this.y = 0;
-				this.image = loadImage("game-assets/missile-pack-2.png");
+				this.image = loadImage("game-assets/astronaut.png");
 				this.loadSound = createAudio("game-assets/load-missiles.wav");
 			}
 			
