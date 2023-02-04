@@ -69,7 +69,64 @@
 				}
 			}
 		}
-		
+
+			class Astronaut
+		{
+			//Astronaut = [];
+			
+			
+			constructor()
+			{
+				this.x = 0;
+				this.y = 0;
+				this.image = loadImage("game-assets/missile-pack-2.png");
+				this.loadSound = createAudio("game-assets/load-missiles.wav");
+			}
+			
+			newAstronaut(score)
+			{
+				if (score > 0 && this.y == 0) // y == 0 means that there is no other pack in the screen
+				{
+					let xR = Math.floor(Math.random() * 300);
+					if ( xR == 1 )
+					{
+						console.log('Create a missile pack');
+						this.x = Math.floor(Math.random() * 1270); // random X position
+						this.y = 0;
+						image(this.image, this.x, this.y++);
+					}
+				}
+			}
+			
+			display()
+			{
+				if (this.y > 0) // when a missilePack is created this.y is increased - so if a missilePack exists then it will be displayed
+				{
+					image(this.image, this.x, this.y+= 5);
+					if (this.y > 591) 
+					{
+						this.y = 0;
+					}
+				}
+			}
+			
+			checkForCollection(spaceship) // if a missilepack collides with the spaceship is collected
+			{
+				// taken by asteroid.checkForCollision() -- not very precise yet 
+				if (Math.abs(this.x - spaceship.x) < 50 && this.y >= 420 && this.y <= 590)
+				{
+					spaceship.addAstronaut(1);
+					this.y = 0; 
+				
+					this.loadSound.play();
+				}
+
+				
+				
+			}
+		}
+
+
 		class MissilePack
 		{
 			//missilePacks = [];
@@ -342,6 +399,7 @@
 		/*
 			Global variables to be used by our game
 		*/
+
 		let spaceShipLives; // object of class SpaceShipLives
 		let background; // background-image
 		let spaceship; // object of class SpaceShip
@@ -351,6 +409,9 @@
 		let startOnce = true;
 		let gameOver = false;
 		let paused = false;
+
+                let astronaut;
+                let Astronaut = [];
 		
 		let missileImage;
 		let missiles = [];
@@ -367,6 +428,8 @@
 			
 			missileImage = loadImage("game-assets/missile-2.png");
 			missilePack = new MissilePack();
+			
+			Astronaut = new Astronaut();
 		}
 		
 		function setup() 
@@ -401,6 +464,7 @@
 			{
 				spaceship.stopEngineSound();
 				spaceship.missiles = 0;
+				spaceship.Astronaut = 0;
 			}
 			
 			if (!gameOver && startGame && !paused) // while the game is played
@@ -436,6 +500,19 @@
 					missiles.push(spaceship.fireMissile());
 				}
 				*/
+				
+				
+				Astronaut.newAstronaut(asteroidSwarm.asteroidsPassed);
+				Astronaut.display();
+				Astronaut.checkForCollection(spaceship);
+				
+				for (let i = 0; i < astronaut.length; i++)
+				{
+					//onsole.log('Check missile['+i+']');
+					if(!astronaut[i].display())
+				}
+				
+				
 				
 				missilePack.newMissilePack(asteroidSwarm.asteroidsPassed);
 				missilePack.display();
@@ -489,7 +566,7 @@
 		function showMessages()
 		{
 			textSize(30);
-			text("Score: " + asteroidSwarm.asteroidsPassed, 30, 135); // Score is shown
+			text("Score: " + spaceship.astronaut, 30, 135); // Score is shown
 			
 			text("Missiles: " + spaceship.missiles, 1120, 60); // Score is shown
 		
